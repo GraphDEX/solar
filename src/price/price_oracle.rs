@@ -70,9 +70,12 @@ impl NativePriceOracle {
         let mut interval = tokio::time::interval(self.update_interval);
         let rpc_client = RpcClient::new(self.solana_rpc_url.clone());
 
+        // First tick returns immediately, so skip it
+        interval.tick().await;
+
         loop {
             tokio::select! {
-                _ = interval.tick() => {}
+                _ = self.try_update_sol_usd_price(&mut interval, &rpc_client) => {}
                 _ = cancel_token.cancelled() => {
 
                     #[cfg(feature = "log")]
@@ -81,20 +84,21 @@ impl NativePriceOracle {
                     return Ok(());
                 }
             }
-
-            interval.tick().await;
-            let price = match Self::get_sol_usd_price_native(&rpc_client).await {
-                Ok(price) => price,
-                Err(_err) => {
-                    #[cfg(feature = "log")]
-                    log::error!(client = "NativePriceOracle"; "failed to get price: {_err:?}");
-                    continue;
-                }
-            };
-
-            let mut sol_usd_price = self.sol_usd_price.write().await;
-            *sol_usd_price = price;
         }
+    }
+
+    async fn try_update_sol_usd_price(self: &Arc<Self>, interval: &mut tokio::time::Interval, rpc_client: &RpcClient) {
+        interval.tick().await;
+        match Self::get_sol_usd_price_native(rpc_client).await {
+            Ok(price) => {
+                let mut sol_usd_price = self.sol_usd_price.write().await;
+                *sol_usd_price = price;
+            },
+            Err(_err) => {
+                #[cfg(feature = "log")]
+                log::error!(client = "NativePriceOracle"; "failed to get price: {_err:?}");
+            }
+        };
     }
 
     async fn prepare(&self) -> Result<(), PriceOracleError> {
