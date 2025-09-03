@@ -10,7 +10,7 @@ use tokio::sync::RwLock;
 use tokio_util::sync::CancellationToken;
 
 use crate::consts::{
-    JUPITER_PROGRAM, SOL_DECIMALS, SOL_USDC_POOL_SOL_VAULT, SOL_USDC_POOL_USDC_VAULT, USDC_DECIMALS,
+    SOL_DECIMALS, SOL_USDC_POOL_SOL_VAULT, SOL_USDC_POOL_USDC_VAULT, USDC_DECIMALS,
 };
 use crate::tool::from_u64;
 
@@ -28,7 +28,6 @@ pub trait PriceOracle {
 
 const SOL_VAULT_ACCOUNT: Pubkey = Pubkey::from_str_const(SOL_USDC_POOL_SOL_VAULT);
 const USDC_VAULT_ACCOUNT: Pubkey = Pubkey::from_str_const(SOL_USDC_POOL_USDC_VAULT);
-const JUPITER_PROGRAM_ACCOUNT: Pubkey = Pubkey::from_str_const(JUPITER_PROGRAM);
 
 pub struct NativePriceOracleBuilder {
     solana_rpc_url: String,
@@ -169,7 +168,7 @@ impl NativePriceOracle {
 
     async fn get_priority_fee_native(rpc_client: &RpcClient) -> Result<u64, PriceOracleError> {
         let recent_fees = rpc_client
-            .get_recent_prioritization_fees(&[JUPITER_PROGRAM_ACCOUNT])
+            .get_recent_prioritization_fees(&[])
             .await
             .context("failed to fetch recent prioritization fees")?;
 
