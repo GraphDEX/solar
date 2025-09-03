@@ -12,3 +12,5 @@ pub const USDC_DECIMALS: u8 = 6;
 
 pub const USDT_ADDRESS: &str = "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB";
 pub const USDT_DECIMALS: u8 = 6;
+
+pub const JUPITER_PROGRAM: &str = "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4";

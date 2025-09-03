@@ -10,7 +10,7 @@ use tokio::sync::RwLock;
 use tokio_util::sync::CancellationToken;
 
 use crate::consts::{
-    SOL_DECIMALS, SOL_USDC_POOL_SOL_VAULT, SOL_USDC_POOL_USDC_VAULT, USDC_DECIMALS,
+    JUPITER_PROGRAM, SOL_DECIMALS, SOL_USDC_POOL_SOL_VAULT, SOL_USDC_POOL_USDC_VAULT, USDC_DECIMALS,
 };
 use crate::tool::from_u64;
 
@@ -23,10 +23,12 @@ pub enum PriceOracleError {
 #[async_trait::async_trait]
 pub trait PriceOracle {
     async fn get_sol_usd_price(&self) -> Result<f64, PriceOracleError>;
+    async fn get_priority_fee(&self) -> Result<u64, PriceOracleError>;
 }
 
 const SOL_VAULT_ACCOUNT: Pubkey = Pubkey::from_str_const(SOL_USDC_POOL_SOL_VAULT);
 const USDC_VAULT_ACCOUNT: Pubkey = Pubkey::from_str_const(SOL_USDC_POOL_USDC_VAULT);
+const JUPITER_PROGRAM_ACCOUNT: Pubkey = Pubkey::from_str_const(JUPITER_PROGRAM);
 
 pub struct NativePriceOracleBuilder {
     solana_rpc_url: String,
@@ -52,6 +54,7 @@ pub struct NativePriceOracle {
     solana_rpc_url: String,
     update_interval: Duration,
     sol_usd_price: RwLock<f64>,
+    priority_fee: RwLock<u64>,
 }
 
 impl NativePriceOracle {
@@ -60,6 +63,7 @@ impl NativePriceOracle {
             solana_rpc_url: solana_rpc_url.into(),
             update_interval,
             sol_usd_price: RwLock::new(0.0),
+            priority_fee: RwLock::new(0),
         }
     }
 
@@ -87,16 +91,31 @@ impl NativePriceOracle {
         }
     }
 
-    async fn try_update_sol_usd_price(self: &Arc<Self>, interval: &mut tokio::time::Interval, rpc_client: &RpcClient) {
+    async fn try_update_sol_usd_price(
+        self: &Arc<Self>,
+        interval: &mut tokio::time::Interval,
+        rpc_client: &RpcClient,
+    ) {
         interval.tick().await;
         match Self::get_sol_usd_price_native(rpc_client).await {
             Ok(price) => {
                 let mut sol_usd_price = self.sol_usd_price.write().await;
                 *sol_usd_price = price;
-            },
+            }
             Err(_err) => {
                 #[cfg(feature = "log")]
                 log::error!(client = "NativePriceOracle"; "failed to get price: {_err:?}");
+            }
+        };
+
+        match Self::get_priority_fee_native(rpc_client).await {
+            Ok(fee) => {
+                let mut priority_fee = self.priority_fee.write().await;
+                *priority_fee = fee;
+            }
+            Err(_err) => {
+                #[cfg(feature = "log")]
+                log::error!(client = "NativePriceOracle"; "failed to get priority fee: {_err:?}");
             }
         };
     }
@@ -109,9 +128,18 @@ impl NativePriceOracle {
             .await
             .context("failed to get price")?;
 
+        let fee = Self::get_priority_fee_native(&rpc_client)
+            .await
+            .context("failed to get priority fee")?;
+
         {
             let mut sol_usd_price = self.sol_usd_price.write().await;
             *sol_usd_price = price;
+        }
+
+        {
+            let mut priority_fee = self.priority_fee.write().await;
+            *priority_fee = fee;
         }
 
         Ok(())
@@ -138,6 +166,20 @@ impl NativePriceOracle {
 
         Ok(price)
     }
+
+    async fn get_priority_fee_native(rpc_client: &RpcClient) -> Result<u64, PriceOracleError> {
+        let recent_fees = rpc_client
+            .get_recent_prioritization_fees(&[JUPITER_PROGRAM_ACCOUNT])
+            .await
+            .context("failed to fetch recent prioritization fees")?;
+
+        let latest_fee = recent_fees
+            .first()
+            .map(|fee| fee.prioritization_fee)
+            .unwrap_or(0);
+
+        Ok(latest_fee)
+    }
 }
 
 #[async_trait::async_trait]
@@ -146,6 +188,11 @@ impl PriceOracle for NativePriceOracle {
         let sol_usd_price = self.sol_usd_price.read().await;
         Ok(*sol_usd_price)
     }
+
+    async fn get_priority_fee(&self) -> Result<u64, PriceOracleError> {
+        let priority_fee = self.priority_fee.read().await;
+        Ok(*priority_fee)
+    }
 }
 
 #[async_trait::async_trait]
@@ -153,6 +200,11 @@ impl PriceOracle for Arc<NativePriceOracle> {
     async fn get_sol_usd_price(&self) -> Result<f64, PriceOracleError> {
         let sol_usd_price = self.sol_usd_price.read().await;
         Ok(*sol_usd_price)
+    }
+
+    async fn get_priority_fee(&self) -> Result<u64, PriceOracleError> {
+        let priority_fee = self.priority_fee.read().await;
+        Ok(*priority_fee)
     }
 }
 
