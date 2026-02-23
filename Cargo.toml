@@ -29,13 +29,14 @@ price = [
   "dep:async-trait",
 ]
 trx_factory = ["dep:tokio", "dep:sqlx"]
+postgres = ["dep:serde", "dep:sqlx"]
 
 log = ["dep:log"]
 
 [dependencies]
 eyre = { version = "0.6.12" }
 readonly = "0"
-serde = { version = "1.0", features = ["derive"] }
+serde = { version = "1.0", features = ["derive"], optional = true }
 serde_json = { version = "1.0" }
 num-bigint = "0.4.6"
 
