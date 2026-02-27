@@ -14,7 +14,11 @@ pub mod rate_limited;
 pub mod solana;
 #[cfg(feature = "trx_factory")]
 pub mod trx_factory;
+#[cfg(feature = "postgres")]
+pub mod postgres;
 
 pub mod consts;
+#[cfg(feature = "solana")]
 pub mod entity;
+#[cfg(feature = "encryptor")]
 pub mod tool;
