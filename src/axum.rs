@@ -14,6 +14,8 @@ pub struct ErrorResponse {
     pub message: String,
     #[serde(default = "error")]
     pub status: ErrorStatus,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub error_code: Option<String>,
     #[serde(skip)]
     pub code: StatusCode,
 }
@@ -23,6 +25,7 @@ impl ErrorResponse {
         Self {
             message: "unauthorized".to_string(),
             status: ErrorStatus::Error,
+            error_code: None,
             code: StatusCode::UNAUTHORIZED,
         }
     }
@@ -31,6 +34,7 @@ impl ErrorResponse {
         Self {
             message: "bad request".to_string(),
             status: ErrorStatus::Error,
+            error_code: None,
             code: StatusCode::BAD_REQUEST,
         }
     }
@@ -39,6 +43,7 @@ impl ErrorResponse {
         Self {
             message: "internal server error".to_string(),
             status: ErrorStatus::Error,
+            error_code: None,
             code: StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
@@ -47,6 +52,7 @@ impl ErrorResponse {
         Self {
             message: "forbidden".to_string(),
             status: ErrorStatus::Error,
+            error_code: None,
             code: StatusCode::FORBIDDEN,
         }
     }
@@ -55,6 +61,7 @@ impl ErrorResponse {
         Self {
             message: "not found".to_string(),
             status: ErrorStatus::Error,
+            error_code: None,
             code: StatusCode::NOT_FOUND,
         }
     }
@@ -65,12 +72,18 @@ impl ErrorResponse {
         Self {
             message: message.into(),
             status: ErrorStatus::Error,
+            error_code: None,
             code,
         }
     }
 
     pub fn with_message(&mut self, message: impl Into<String>) -> Self {
         self.message = message.into();
+        self.clone()
+    }
+
+    pub fn with_error_code(&mut self, error_code: impl Into<String>) -> Self {
+        self.error_code = Some(error_code.into());
         self.clone()
     }
 }
