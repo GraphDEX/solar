@@ -47,6 +47,8 @@ pub enum Dex {
     // Meteora
     MeteoraDlmm,
     MeteoraDamm,
+    // Orca
+    OrcaWhirlpool,
 }
 
 impl Dex {
@@ -61,6 +63,8 @@ impl Dex {
 
             Dex::MeteoraDlmm => "Meteora DLMM".to_string(),
             Dex::MeteoraDamm => "Meteora DAMM".to_string(),
+
+            Dex::OrcaWhirlpool => "Orca Whirlpool".to_string(),
         }
     }
 }
