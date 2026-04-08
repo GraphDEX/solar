@@ -46,7 +46,9 @@ pub enum Dex {
     RaydiumCpmm,
     // Meteora
     MeteoraDlmm,
-    MeteoraDamm,
+    MeteoraDammV1,
+    MeteoraDammV2,
+    DBC,
     // Orca
     OrcaWhirlpool,
 }
@@ -62,7 +64,9 @@ impl Dex {
             Dex::RaydiumCpmm => "Raydium CPMM".to_string(),
 
             Dex::MeteoraDlmm => "Meteora DLMM".to_string(),
-            Dex::MeteoraDamm => "Meteora DAMM".to_string(),
+            Dex::MeteoraDammV1 => "Meteora DAMM V1".to_string(),
+            Dex::MeteoraDammV2 => "Meteora DAMM V2".to_string(),
+            Dex::DBC => "DBC".to_string(),
 
             Dex::OrcaWhirlpool => "Orca Whirlpool".to_string(),
         }
