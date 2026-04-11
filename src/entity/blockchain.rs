@@ -44,6 +44,7 @@ pub enum Dex {
     RaydiumAmm,
     RaydiumClmm,
     RaydiumCpmm,
+    BonkFun,
     // Meteora
     MeteoraDlmm,
     MeteoraDammV1,
@@ -51,6 +52,8 @@ pub enum Dex {
     MeteoraDbc,
     // Orca
     OrcaWhirlpool,
+    BoopFun,
+    Moonshot,
 }
 
 impl Dex {
@@ -69,6 +72,10 @@ impl Dex {
             Dex::MeteoraDbc => "Meteora DBC".to_string(),
 
             Dex::OrcaWhirlpool => "Orca Whirlpool".to_string(),
+
+            Dex::BonkFun => "BONKfun".to_string(),
+            Dex::BoopFun => "boop.fun".to_string(),
+            Dex::Moonshot => "Moonshot".to_string(),
         }
     }
 }
