@@ -38,19 +38,43 @@ impl std::fmt::Display for Chain {
 #[serde(rename_all = "snake_case")]
 pub enum Dex {
     // Pump.fun
+    #[serde(alias = "Pump.fun", alias = "pump.fun", alias = "Pumpfun")]
     Pumpfun,
+    #[serde(alias = "Pump.fun AMM", alias = "pump.fun AMM", alias = "PumpAmm")]
     PumpAmm,
     // Raydium
+    #[serde(alias = "Raydium AMM", alias = "raydium AMM", alias = "RaydiumAmm")]
     RaydiumAmm,
+    #[serde(alias = "Raydium CLMM", alias = "raydium CLMM", alias = "RaydiumClmm")]
     RaydiumClmm,
+    #[serde(alias = "Raydium CPMM", alias = "raydium CPMM", alias = "RaydiumCpmm")]
     RaydiumCpmm,
+    #[serde(alias = "BONKfun", alias = "bonkfun", alias = "BonkFun")]
     BonkFun,
     // Meteora
+    #[serde(alias = "Meteora DLMM", alias = "meteora DLMM", alias = "MeteoraDlmm")]
     MeteoraDlmm,
+    #[serde(
+        alias = "Meteora DAMM",
+        alias = "Meteora DAMM V1",
+        alias = "meteora_damm"
+    )]
     MeteoraDammV1,
+    #[serde(
+        alias = "Meteora DAMM V2",
+        alias = "Meteora damm V2",
+        alias = "meteora damm v2"
+    )]
     MeteoraDammV2,
     MeteoraDbc,
     // Orca
+    #[serde(
+        alias = "Orca Whirlpool",
+        alias = "orca whirlpool",
+        alias = "OrcaWhirlpool",
+        alias = "Orca",
+        alias = "orca"
+    )]
     OrcaWhirlpool,
     BoopFun,
     Moonshot,
