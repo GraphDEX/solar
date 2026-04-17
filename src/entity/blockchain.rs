@@ -76,6 +76,15 @@ pub enum Dex {
         alias = "orca"
     )]
     OrcaWhirlpool,
+    #[serde(
+        alias = "orca v1",
+        alias = "Orca v1",
+        alias = "orcaV1",
+        alias = "OrcaV1",
+        alias = "Orca Classic",
+        alias = "orca classic"
+    )]
+    OrcaV1,
     BoopFun,
     Moonshot,
 }
@@ -96,6 +105,7 @@ impl Dex {
             Dex::MeteoraDbc => "Meteora DBC".to_string(),
 
             Dex::OrcaWhirlpool => "Orca Whirlpool".to_string(),
+            Dex::OrcaV1 => "Orca V1 Classic".to_string(),
 
             Dex::BonkFun => "BONKfun".to_string(),
             Dex::BoopFun => "boop.fun".to_string(),
