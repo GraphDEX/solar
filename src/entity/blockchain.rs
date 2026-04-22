@@ -66,6 +66,7 @@ pub enum Dex {
         alias = "meteora damm v2"
     )]
     MeteoraDammV2,
+    #[serde(alias = "Meteora DBC", alias = "meteora dbc", alias = "MeteoraDbc")]
     MeteoraDbc,
     // Orca
     #[serde(
@@ -73,12 +74,15 @@ pub enum Dex {
         alias = "orca whirlpool",
         alias = "OrcaWhirlpool",
         alias = "Orca",
-        alias = "orca"
+        alias = "orca",
+        alias = "Orca V2",
+        alias = "orca v2"
     )]
     OrcaWhirlpool,
     #[serde(
         alias = "orca v1",
         alias = "Orca v1",
+        alias = "Orca V1",
         alias = "orcaV1",
         alias = "OrcaV1",
         alias = "Orca Classic",
