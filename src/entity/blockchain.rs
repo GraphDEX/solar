@@ -49,6 +49,12 @@ pub enum Dex {
     RaydiumClmm,
     #[serde(alias = "Raydium CPMM", alias = "raydium CPMM", alias = "RaydiumCpmm")]
     RaydiumCpmm,
+    #[serde(
+        alias = "Raydium Launchpad",
+        alias = "raydium launchpad",
+        alias = "RaydiumLaunchpad"
+    )]
+    RaydiumLaunchpad,
     #[serde(alias = "BONKfun", alias = "bonkfun", alias = "BonkFun")]
     BonkFun,
     // Meteora
@@ -91,6 +97,10 @@ pub enum Dex {
     OrcaV1,
     BoopFun,
     Moonshot,
+    #[serde(alias = "BonkSwap", alias = "bonkswap")]
+    BonkSwap,
+    #[serde(alias = "Phoenix")]
+    Phoenix,
 }
 
 impl Dex {
@@ -102,6 +112,7 @@ impl Dex {
             Dex::RaydiumAmm => "Raydium AMM".to_string(),
             Dex::RaydiumClmm => "Raydium CLMM".to_string(),
             Dex::RaydiumCpmm => "Raydium CPMM".to_string(),
+            Dex::RaydiumLaunchpad => "Raydium Launchpad".to_string(),
 
             Dex::MeteoraDlmm => "Meteora DLMM".to_string(),
             Dex::MeteoraDammV1 => "Meteora DAMM V1".to_string(),
@@ -114,6 +125,8 @@ impl Dex {
             Dex::BonkFun => "BONKfun".to_string(),
             Dex::BoopFun => "boop.fun".to_string(),
             Dex::Moonshot => "Moonshot".to_string(),
+            Dex::BonkSwap => "BonkSwap".to_string(),
+            Dex::Phoenix => "Phoenix".to_string(),
         }
     }
 }
