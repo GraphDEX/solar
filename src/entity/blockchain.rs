@@ -96,6 +96,7 @@ pub enum Dex {
     )]
     OrcaV1,
     BoopFun,
+    #[serde(alias = "Moonshot")]
     Moonshot,
     #[serde(alias = "BonkSwap", alias = "bonkswap")]
     BonkSwap,
